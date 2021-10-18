@@ -4,27 +4,27 @@ help:
 
 .PHONY: init
 init:
-	$(call terraform-cmd-env,init)
+	$(call terraform-cmd,init)
 	
 .PHONY: upgrade
 upgrade:
-	$(call terraform-cmd-env,init -upgrade)
+	$(call terraform-cmd,init -upgrade)
 	
 .PHONY: plan
 plan: fmt
-	$(call terraform-cmd-env,plan)
+	$(call terraform-cmd,plan)
 
 .PHONY: apply
 apply: validate fmt
-	$(call terraform-cmd-env,apply)
+	$(call terraform-cmd,apply)
 
 .PHONY: destroy
 destroy: validate
-	$(call terraform-cmd-env,destroy)
+	$(call terraform-cmd,destroy)
 
 .PHONY: output
 output: fmt
-	$(call terraform-cmd-env,output)
+	$(call terraform-cmd,output)
 	
 .PHONY: fmt
 fmt: validate
@@ -38,17 +38,8 @@ define terraform-validate
 	sh -c "terraform validate; terraform validate -json | jq .valid"
 endef
 
-define terraform-cmd-env
-	$(call read-variable) \
-	pushd roots/$$env/; \
-	$(call terraform-cmd,$(1)) \
-	popd;
-endef
-
-define read-variable
-	read -p "Environment: " env;
-endef
-
 define terraform-cmd
-	terraform $(1);
+	pushd roots; \
+	terraform $(1); \
+	popd;
 endef

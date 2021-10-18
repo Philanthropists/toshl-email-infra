@@ -22,7 +22,7 @@ provider "aws" {
 }
 
 locals {
-    bucket_prefix = "personal-aanzolaavila-terraform-state"
+  bucket_prefix = "personal-aanzolaavila-terraform-state"
 }
 
 resource "aws_s3_bucket" "terraform_state" {
