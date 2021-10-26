@@ -16,7 +16,27 @@ resource "aws_lambda_function" "sync" {
   role             = "${aws_iam_role.iam_for_lambda.arn}"
   runtime          = "go1.x"
   memory_size      = 128
-  timeout          = 10
+  timeout          = 150
+}
+
+resource "aws_cloudwatch_event_rule" "schedule" {
+  name                = "schedule"
+  description         = "Fires every 5 minutes"
+  schedule_expression = "rate(5 minutes)"
+}
+
+resource "aws_cloudwatch_event_target" "check_schedule" {
+  rule      = "${aws_cloudwatch_event_rule.schedule.name}"
+  target_id = "lambda"
+  arn       = "${aws_lambda_function.sync.arn}"
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_foo" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.sync.function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.schedule.arn}"
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
