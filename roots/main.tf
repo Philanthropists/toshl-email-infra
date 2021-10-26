@@ -19,3 +19,13 @@ module "toshl-dynamodb" {
     aws = aws.us1
   }
 }
+
+module "toshl-lambda" {
+  source          = "../modules/lambda-function"
+  toshl-table     = module.toshl-dynamodb.table-name
+  toshl-table-arn = module.toshl-dynamodb.table-arn
+
+  providers = {
+    aws = aws.us1
+  }
+}

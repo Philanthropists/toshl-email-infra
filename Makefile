@@ -11,12 +11,16 @@ upgrade:
 	$(call terraform-cmd,init -upgrade)
 	
 .PHONY: plan
-plan: fmt
+plan: fmt build
 	$(call terraform-cmd,plan)
 
 .PHONY: apply
-apply: validate fmt
+apply: validate fmt build
 	$(call terraform-cmd,apply)
+	
+.PHONY: build
+build:
+	sh -c "cd toshl-email-autosync; make build-for-lambda"
 
 .PHONY: destroy
 destroy: validate
