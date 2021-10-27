@@ -32,7 +32,7 @@ output: fmt
 	
 .PHONY: fmt
 fmt: validate
-	$(call terraform-cmd,fmt -recursive -list=true)
+	terraform fmt -recursive -list=true
 
 .PHONY: validate
 validate:
