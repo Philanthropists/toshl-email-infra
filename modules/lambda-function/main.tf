@@ -7,6 +7,8 @@ terraform {
   }
 }
 
+data "aws_region" "current" {}
+
 locals {
   filepath = "/tmp/aws-lambda-go.zip"
 }
@@ -41,7 +43,7 @@ resource "aws_cloudwatch_event_target" "check_schedule" {
   arn       = aws_lambda_function.sync.arn
 }
 
-resource "aws_lambda_permission" "allow_cloudwatch_to_call_check_foo" {
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_check" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.sync.function_name
@@ -111,8 +113,25 @@ resource "aws_iam_role_policy" "iam_dynamodb_policy" {
 EOF
 }
 
-resource "aws_cloudwatch_log_group" "lambda-loggroup" {
+resource "aws_cloudwatch_log_group" "lambda" {
   name = "/aws/lambda/${aws_lambda_function.sync.function_name}"
 
   retention_in_days = 1
+}
+
+data "aws_iam_policy_document" "lambda_exec_role_policy_without_createloggroup" {
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      "arn:aws:logs:*:*:*"
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_exec_role_without_createloggroup" {
+  role   = aws_iam_role.iam_for_lambda.id
+  policy = data.aws_iam_policy_document.lambda_exec_role_policy_without_createloggroup.json
 }
