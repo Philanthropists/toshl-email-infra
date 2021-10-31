@@ -126,7 +126,7 @@ data "aws_iam_policy_document" "lambda_exec_role_policy_without_createloggroup" 
       "logs:PutLogEvents"
     ]
     resources = [
-      aws_cloudwatch_log_group.lambda.arn
+      "arn:aws:logs:*:*:*"
     ]
   }
 }
