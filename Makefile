@@ -20,6 +20,7 @@ apply: validate fmt build
 	
 .PHONY: build
 build:
+	rm -f /tmp/aws-lambda-go.zip
 	sh -c "cd toshl-email-autosync; make build-for-lambda"
 
 .PHONY: destroy
