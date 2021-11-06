@@ -20,8 +20,12 @@ apply: validate fmt build
 	
 .PHONY: build
 build:
+	[ ! -f credentials.json ] && exit 1 || true
+	cp toshl-email-autosync/credentials.json{,.bkp}
+	cp credentials.json toshl-email-autosync
 	rm -f /tmp/aws-lambda-go.zip
 	sh -c "cd toshl-email-autosync; make build-for-lambda"
+	mv toshl-email-autosync/credentials.json{.bkp,}
 
 .PHONY: destroy
 destroy: validate

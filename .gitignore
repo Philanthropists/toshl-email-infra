@@ -37,3 +37,5 @@ terraform.rc
 # Ignore python cache files
 *__pycache__/
 venv/
+
+credentials.json
