@@ -28,6 +28,7 @@ module "toshl-lambda" {
   source          = "../modules/lambda-function"
   toshl-table     = module.toshl-dynamodb.table-name
   toshl-table-arn = module.toshl-dynamodb.table-arn
+  ecr_image_uri   = "${module.ecr-repo.repository_url}:latest"
 
   providers = {
     aws = aws.us1

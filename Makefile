@@ -5,27 +5,18 @@ help:
 .PHONY: init
 init:
 	$(call terraform-cmd,init)
-	
+
 .PHONY: upgrade
 upgrade:
 	$(call terraform-cmd,init -upgrade)
-	
+
 .PHONY: plan
 plan: fmt build
 	$(call terraform-cmd,plan)
 
 .PHONY: apply
-apply: validate fmt build
+apply: fmt build
 	$(call terraform-cmd,apply)
-	
-.PHONY: build
-build:
-	[ ! -f credentials.json ] && exit 1 || true
-	cp toshl-email-autosync/credentials.json{,.bkp}
-	cp credentials.json toshl-email-autosync
-	rm -f /tmp/aws-lambda-go.zip
-	sh -c "cd toshl-email-autosync; make build-for-lambda"
-	mv toshl-email-autosync/credentials.json{.bkp,}
 
 .PHONY: destroy
 destroy: validate
@@ -34,7 +25,7 @@ destroy: validate
 .PHONY: output
 output: fmt
 	$(call terraform-cmd,output)
-	
+
 .PHONY: fmt
 fmt: validate
 	terraform fmt -recursive -list=true

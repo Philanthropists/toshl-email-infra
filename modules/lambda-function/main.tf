@@ -1,22 +1,10 @@
 data "aws_region" "current" {}
 
-locals {
-  filepath = "/tmp/aws-lambda-go.zip"
-}
-
-data "archive_file" "zip" {
-  type        = "zip"
-  source_dir  = "../toshl-email-autosync/bin"
-  output_path = local.filepath
-}
-
 resource "aws_lambda_function" "sync" {
   function_name                  = "toshl-sync"
-  filename                       = local.filepath
-  handler                        = "main"
-  source_code_hash               = data.archive_file.zip.output_base64sha256
+  image_uri                      = var.ecr_image_uri
+  package_type                   = "Image"
   role                           = aws_iam_role.iam_for_lambda.arn
-  runtime                        = "go1.x"
   memory_size                    = 128
   timeout                        = 150
   reserved_concurrent_executions = 1
