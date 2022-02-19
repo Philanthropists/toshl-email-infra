@@ -20,6 +20,10 @@ module "toshl-dynamodb" {
   }
 }
 
+module "ecr-repo" {
+  source = "../modules/ecr-repository"
+}
+
 module "toshl-lambda" {
   source          = "../modules/lambda-function"
   toshl-table     = module.toshl-dynamodb.table-name

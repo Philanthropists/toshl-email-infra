@@ -1,12 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.38"
-    }
-  }
-}
-
 data "aws_region" "current" {}
 
 locals {
@@ -63,8 +54,7 @@ resource "aws_iam_role" "iam_for_lambda" {
       "Principal": {
         "Service": "lambda.amazonaws.com"
       },
-      "Effect": "Allow",
-      "Sid": ""
+      "Effect": "Allow"
     }
   ]
 }
