@@ -33,62 +33,66 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_check" {
 resource "aws_iam_role" "iam_for_lambda" {
   name = "iam_for_lambda"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow"
-    }
-  ]
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
-EOF
+
+data "aws_iam_policy_document" "assume_role_policy" {
+  version = "2012-10-17"
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "sts:AssumeRole"
+    ]
+
+    principals {
+      identifiers = ["lambda.amazonaws.com"]
+      type        = "Service"
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "iam_dynamodb_policy" {
   name = "iam_dynamodb_policy"
   role = aws_iam_role.iam_for_lambda.id
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "ListAndDescribe",
-      "Effect": "Allow",
-      "Action": [
-          "dynamodb:List*",
-          "dynamodb:DescribeReservedCapacity*",
-          "dynamodb:DescribeLimits",
-          "dynamodb:DescribeTimeToLive"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "SpecificTable",
-      "Effect": "Allow",
-      "Action": [
-          "dynamodb:BatchGet*",
-          "dynamodb:DescribeStream",
-          "dynamodb:DescribeTable",
-          "dynamodb:Get*",
-          "dynamodb:Query",
-          "dynamodb:Scan",
-          "dynamodb:BatchWrite*",
-          "dynamodb:CreateTable",
-          "dynamodb:Delete*",
-          "dynamodb:Update*",
-          "dynamodb:PutItem"
-      ],
-      "Resource": "${var.toshl-table-arn}"
-    }
-  ]
+  policy = data.aws_iam_policy_document.iam_dynamodb_policy_document.json
 }
-EOF
+
+data "aws_iam_policy_document" "iam_dynamodb_policy_document" {
+  version = "2012-10-17"
+
+  statement {
+    sid    = "ListAndDescribe"
+    effect = "Allow"
+    actions = [
+      "dynamodb:List*",
+      "dynamodb:DescribeReservedCapacity*",
+      "dynamodb:DescribeLimits",
+      "dynamodb:DescribeTimeToLive"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "SpecificTable"
+    effect = "Allow"
+    actions = [
+      "dynamodb:BatchGet*",
+      "dynamodb:DescribeStream",
+      "dynamodb:DescribeTable",
+      "dynamodb:Get*",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:BatchWrite*",
+      "dynamodb:CreateTable",
+      "dynamodb:Delete*",
+      "dynamodb:Update*",
+      "dynamodb:PutItem"
+    ]
+    resources = [var.toshl-table-arn]
+  }
 }
 
 resource "aws_cloudwatch_log_group" "lambda" {
