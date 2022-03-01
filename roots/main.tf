@@ -22,6 +22,10 @@ module "toshl-dynamodb" {
 
 module "ecr-repo" {
   source = "../modules/ecr-repository"
+
+  providers = {
+    aws = aws.us1
+  }
 }
 
 module "toshl-lambda" {
