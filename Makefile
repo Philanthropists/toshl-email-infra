@@ -11,7 +11,7 @@ upgrade:
 	$(call terraform-cmd,init -upgrade)
 
 .PHONY: plan
-plan: fmt build
+plan: fmt
 	$(call terraform-cmd,plan)
 
 .PHONY: apply
