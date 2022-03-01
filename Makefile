@@ -15,7 +15,7 @@ plan: fmt build
 	$(call terraform-cmd,plan)
 
 .PHONY: apply
-apply: fmt build
+apply: fmt
 	$(call terraform-cmd,apply)
 
 .PHONY: destroy
