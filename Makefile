@@ -2,6 +2,11 @@
 help:
 	@echo "Terraform makefile"
 
+.PHONY: refresh
+refresh:
+	$(call terraform-cmd,apply -replace=module.toshl-lambda.aws_cloudwatch_event_target.check_schedule)
+	$(call terraform-cmd,apply -replace=module.toshl-lambda.aws_lambda_function.sync)
+
 .PHONY: init
 init:
 	$(call terraform-cmd,init)
