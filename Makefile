@@ -4,8 +4,8 @@ help:
 
 .PHONY: refresh
 refresh:
-	$(call terraform-cmd,apply -replace=module.toshl-lambda.aws_lambda_function.sync)
-	$(call terraform-cmd,apply -replace=module.toshl-lambda.aws_cloudwatch_event_target.check_schedule)
+	$(call terraform-cmd,apply -auto-approve -replace=module.toshl-lambda.aws_lambda_function.sync)
+	$(call terraform-cmd,apply -auto-approve -replace=module.toshl-lambda.aws_cloudwatch_event_target.check_schedule)
 
 .PHONY: init
 init:
