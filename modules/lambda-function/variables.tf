@@ -1,11 +1,6 @@
-variable "toshl-table" {
-  description = "dynamodb table for toshl"
-  type        = string
-}
-
-variable "toshl-table-arn" {
-  description = "dynamodb table for toshl"
-  type        = string
+variable "toshl-table-arns" {
+  description = "dynamodb tables for toshl"
+  type        = list(string)
 }
 
 variable "ecr_image_uri" {

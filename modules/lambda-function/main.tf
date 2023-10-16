@@ -91,7 +91,7 @@ data "aws_iam_policy_document" "iam_dynamodb_policy_document" {
       "dynamodb:Update*",
       "dynamodb:PutItem"
     ]
-    resources = [var.toshl-table-arn]
+    resources = var.toshl-table-arns
   }
 }
 
